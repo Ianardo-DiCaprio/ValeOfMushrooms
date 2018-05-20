@@ -13,8 +13,6 @@ class Ticketing:
             'closed_category': None,
             'ticket_role': None,
             'default_message': None,
-            'dm_message_open': None,
-            'dm_message_close': None,
             'sessions': {}
         }
         self.config.register_guild(**default_guild)
@@ -36,11 +34,12 @@ class Ticketing:
                 await ticket_channel.set_permissions(guild.me, send_messages=True)
                 if default_message:
                     await ticket_channel.send(default_message)
-                await self.config.guild(guild).sessions.set({ticket_channel.id: author.id})
+                async with self.config.guild(guild).sessions() as session:
+                        session.update({ticket_channel.id: author.id})
                 try:
                     await author.send('Ticket `#{}` has been opened for you on {}.'.format(ticket_id, guild.name))
                 except discord.Forbidden:
-                    pass
+                    await context.send('Ticket `#{}` has been opened for you on {}.'.format(ticket_id, guild.name))
             else:
                 await context.send('Naughty! You need to run the setup first.')
 
@@ -53,7 +52,7 @@ class Ticketing:
         channel = context.channel
         author = context.author
         sessions = await self.config.guild(guild).sessions()
-        if channel.id in sessions and await self.config.guild(guild).ticket_role() in [role.id for role in author.roles]:
+        if await self.config.guild(guild).ticket_role() in [role.id for role in author.roles]:
             member = guild.get_member(sessions[channel.id])
 
             closed_category_channel = await self.config.guild(guild).closed_category()
@@ -61,6 +60,9 @@ class Ticketing:
 
             await channel.set_permissions(member, read_messages=False, send_messages=False)
             await channel.edit(category=closed_category_channel)
+
+            async with self.config.guild(guild).sessions() as session:
+                    session.pop(channel.id, None)
 
             ticket_id = str(channel.name).split('-')[1]
             try:
@@ -99,7 +101,7 @@ class Ticketing:
             await self.config.guild(guild).category.set(category_channel.id)
             await self.config.guild(guild).closed_category.set(closed_category_channel.id)
             await self.config.guild(guild).ticket_role.set(ticket_role.id)
-            await context.send(':tada: Fabulous! You\'re all done! Now add the `Ticket` role to anyone who you deem good enought to handle tickets. And if you care, you can change the name of the role and category if you _really_ want to.')
+            await context.send(':tada: Fabulous! You\'re all done! Now add the `Ticket` role to anyone who you deem good enough to handle tickets. And if you care, you can change the name of the role and category if you _really_ want to.')
         except discord.Forbidden:
             await context.send('That didn\'t go well... I need permissions to create channels. :rolling_eyes:')
 
