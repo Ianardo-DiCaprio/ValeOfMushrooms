@@ -22,6 +22,11 @@ class Ticketing:
 
     @commands.group(name='ticket')
     async def _ticket(self, context):
+        if context.invoked_subcommand is None:
+            await context.send_help()
+
+    @_ticket.command(name='new')
+    async def _ticket_new(self, context):
         '''
         Create a new ticket
         '''
@@ -36,7 +41,7 @@ class Ticketing:
             if category_channel and category_channel in [category.id for category in guild.categories]:
 
                 ticket_id = int(time.time())
-                ticket_channel = await guild.create_text_channel('ticket-{}'.format(ticket_id), category=self.bot.get_channel(category_channel))
+                ticket_channel = await guild.create_text_channel('TICKET-{}'.format(ticket_id), category=self.bot.get_channel(category_channel))
 
                 await ticket_channel.set_permissions(author, read_messages=True, send_messages=True)
                 await ticket_channel.set_permissions(guild.me, send_messages=True)
@@ -49,11 +54,6 @@ class Ticketing:
                 async with self.config.guild(guild).sessions() as session:
                         session.update({ticket_channel.id: author.id})
 
-                try:
-                    await author.send('Ticket `#{}` has been opened for you on {}.'.format(ticket_id, guild.name))
-                except discord.Forbidden:
-                    pass
-
             else:
                 await context.send('Naughty! You need to run the setup first.')
 
@@ -62,6 +62,12 @@ class Ticketing:
         '''
         Update the status of a ticket
         '''
+
+        try:
+            await context.message.delete()
+        except discord.Forbidden:
+            pass
+
         guild = context.guild
         channel = context.channel
         author = context.author
@@ -74,16 +80,16 @@ class Ticketing:
 
             await channel.edit(topic=channel.topic+self.ticket_info_format.format(ticket=ticket_id, datetime=datetime.utcnow().strftime('%d/%m/%Y %H:%M:%S'), author=author.display_name, information=status))
 
-            try:
-                await context.message.delete()
-            except discord.Forbidden:
-                pass
-
     @_ticket.command(name='close')
     async def _ticket_close(self, context):
         '''
         Close a ticket
         '''
+        try:
+            await context.message.delete()
+        except discord.Forbidden:
+            pass
+
         guild = context.guild
         channel = context.channel
         author = context.author
@@ -103,27 +109,43 @@ class Ticketing:
             async with self.config.guild(guild).sessions() as session:
                     session.pop(channel.id, None)
 
-            try:
-                await member.send('Ticket `#{}` on {} has been closed.'.format(ticket_id, guild.name))
-            except discord.Forbidden:
-                pass
-
-            try:
-                await context.message.delete()
-            except discord.Forbidden:
-                pass
-
-    @commands.group(name='ticketset')
-    async def _tickets(self, context):
+    @_ticket.group(name='set')
+    @commands.has_permissions(administrator=True)
+    async def _ticket_set(self, context):
         '''
-        The settings for Tickets
+        Settings
         '''
-        if context.invoked_subcommand is None:
+        if context.invoked_subcommand is None or context.invoked_subcommand == self._ticket_set:
             await context.send_help()
 
-    @_tickets.command(name='setup')
+    @_ticket_set.command(name='purge')
+    async def _ticket_set_purge(self, context):
+        '''
+        Delete all closed tickets
+        '''
+        guild = context.guild
+
+        try:
+            closed_channels = [channel for channel in guild.channels if channel.category_id == await self.config.guild(guild).closed_category()]
+            for channel in closed_channels:
+                await channel.delete()
+            await context.send('All closed tickets removed!')
+        except discord.Forbidden:
+            await context.send('I need permissions to manage channels.')
+
+    @_ticket_set.command(name='message')
     @commands.has_permissions(administrator=True)
-    async def _tickets_setup(self, context):
+    async def _ticket_set_message(self, context, *message: str):
+        '''
+        Set the default message when a new ticket has been created (markdown safe)
+        '''
+        guild = context.guild
+        message = ' '.join(message)
+        await self.config.guild(guild).default_message.set(message)
+        await context.send('Your default message has been set.')
+
+    @_ticket_set.command(name='setup')
+    async def _ticket_setup(self, context):
         '''
         Automatic setup
         '''
@@ -150,14 +172,3 @@ class Ticketing:
 
         except discord.Forbidden:
             await context.send('That didn\'t go well... I need permissions to create channels. :rolling_eyes:')
-
-    @_tickets.command(name='message')
-    @commands.has_permissions(administrator=True)
-    async def _tickets_message(self, context, *message: str):
-        '''
-        Set the default message when a new ticket has been created (markdown safe)
-        '''
-        guild = context.guild
-        message = ' '.join(message)
-        await self.config.guild(guild).default_message.set(message)
-        await context.send('Your default message has been set.')
