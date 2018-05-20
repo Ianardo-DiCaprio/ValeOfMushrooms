@@ -8,6 +8,7 @@ import time
 class Ticketing:
     def __init__(self, bot):
         self.bot = bot
+
         self.config = Config.get_conf(self, identifier=2134287593)
         default_guild = {
             'category': None,
@@ -62,7 +63,6 @@ class Ticketing:
         '''
         Update the status of a ticket
         '''
-
         try:
             await context.message.delete()
         except discord.Forbidden:
@@ -104,8 +104,9 @@ class Ticketing:
             closed_category_channel = await self.config.guild(guild).closed_category()
             closed_category_channel = self.bot.get_channel(closed_category_channel)
 
-            await channel.set_permissions(member, read_messages=False, send_messages=False)
+            await channel.set_permissions(member, read_messages=True, send_messages=False)
             await channel.edit(category=closed_category_channel, topic=channel.topic+self.ticket_info_format.format(ticket=ticket_id, datetime=datetime.utcnow().strftime('%d/%m/%Y %H:%M:%S'), author=author.display_name, information='Ticket closed'))
+
             async with self.config.guild(guild).sessions() as session:
                     session.pop(channel.id, None)
 
@@ -127,8 +128,10 @@ class Ticketing:
 
         try:
             closed_channels = [channel for channel in guild.channels if channel.category_id == await self.config.guild(guild).closed_category()]
+
             for channel in closed_channels:
                 await channel.delete()
+
             await context.send('All closed tickets removed!')
         except discord.Forbidden:
             await context.send('I need permissions to manage channels.')
@@ -141,7 +144,9 @@ class Ticketing:
         '''
         guild = context.guild
         message = ' '.join(message)
+
         await self.config.guild(guild).default_message.set(message)
+
         await context.send('Your default message has been set.')
 
     @_ticket_set.command(name='setup')
