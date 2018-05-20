@@ -2,7 +2,7 @@ from discord.ext import commands
 from redbot.core import Config
 from datetime import datetime
 import discord
-import time
+import random
 
 
 class Ticketing:
@@ -41,11 +41,11 @@ class Ticketing:
 
             if category_channel and category_channel in [category.id for category in guild.categories]:
 
-                ticket_id = int(time.time())
-                ticket_channel = await guild.create_text_channel('TICKET-{}'.format(ticket_id), category=self.bot.get_channel(category_channel))
+                ticket_id = int(random.randint(1000000, 1999999))
+                ticket_channel = await guild.create_text_channel('{}-{}'.format(author.display_name, ticket_id), category=self.bot.get_channel(category_channel))
 
                 await ticket_channel.set_permissions(author, read_messages=True, send_messages=True)
-                await ticket_channel.set_permissions(guild.me, send_messages=True)
+                await ticket_channel.set_permissions(guild.me, read_messages=True, send_messages=True, manage_channels=True)
 
                 await ticket_channel.edit(topic=self.ticket_info_format.format(ticket=ticket_id, datetime=datetime.utcnow().strftime('%d/%m/%Y %H:%M:%S'), author=author.display_name, information='Ticket opened'))
 
@@ -76,8 +76,8 @@ class Ticketing:
         sessions = await self.config.guild(guild).sessions()
 
         if channel.id in sessions and await self.config.guild(guild).ticket_role() in [role.id for role in author.roles]:
-            ticket_id = str(channel.name).split('-')[1]
 
+            ticket_id = str(channel.name).split('-')[1]
             await channel.edit(topic=channel.topic+self.ticket_info_format.format(ticket=ticket_id, datetime=datetime.utcnow().strftime('%d/%m/%Y %H:%M:%S'), author=author.display_name, information=status))
 
     @_ticket.command(name='close')
@@ -176,4 +176,4 @@ class Ticketing:
             await context.send(':tada: Fabulous! You\'re all done! Now add the `Ticket` role to anyone who you deem good enough to handle tickets. And if you care, you can change the name of the role and category if you _really_ want to.')
 
         except discord.Forbidden:
-            await context.send('That didn\'t go well... I need permissions to create channels. :rolling_eyes:')
+            await context.send('That didn\'t go well... I need permissions to manage channels and manage roles. :rolling_eyes:')
