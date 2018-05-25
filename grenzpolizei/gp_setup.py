@@ -87,10 +87,6 @@ class GrenzpolizeiSetup:
             'on_voice_state_update': {
               'enabled': False,
               'channel': False
-            },
-            'on_warning': {
-              'enabled': False,
-              'channel': False
             }
         }
 
@@ -110,13 +106,13 @@ class GrenzpolizeiSetup:
                 await bot_message.edit(content=_('**{} Yes**').format(question))
                 try:
                     await message.delete()
-                except:
+                except discord.Forbidden:
                     pass
                 return True
         await bot_message.edit(content=_('**{} No**').format(question))
         try:
             await message.delete()
-        except:
+        except discord.Forbidden:
             pass
         return False
 
@@ -143,18 +139,23 @@ class GrenzpolizeiSetup:
 
     async def auto_setup(self):
         events = self.default_events
-        guild_config = {}
+
         overwrites = {
             self.context.guild.default_role: discord.PermissionOverwrite(send_messages=False),
             self.context.guild.me: discord.PermissionOverwrite(send_messages=True)
         }
+
         message = await self.context.send(_('Creating Grenzpolizei category...'))
+
         big_brother_category = await self.context.guild.create_category('Grenzpolizei', reason=_('Grenzpolizei needs this to put all event channels in.'), overwrites=overwrites)
+
         await message.edit(content=_('Creating event channels...'))
+
         member_event_channel = await self.context.guild.create_text_channel('member-events', category=big_brother_category, reason=_('Grenzpolizei will put all member events in this channel.'))
         message_event_channel = await self.context.guild.create_text_channel('message-events', category=big_brother_category, reason=_('Grenzpolizei will put all message events in this channel.'))
         guild_event_channel = await self.context.guild.create_text_channel('server-events', category=big_brother_category, reason=_('Grenzpolizei will put all server events in this channel.'))
         mod_event_channel = await self.context.guild.create_text_channel('mod-events', category=big_brother_category, reason=_('Grenzpolizei will put all mod events in this channel.'))
+
         await message.edit(content=_('Setting up all events...'))
 
         # Member events
@@ -201,17 +202,14 @@ class GrenzpolizeiSetup:
         events['on_guild_role_update']['channel'] = guild_event_channel.id
 
         # Warning events
-        events['on_warning']['enabled'] = True
         events['on_kick']['enabled'] = True
         events['on_ban']['enabled'] = True
 
-        events['on_warning']['channel'] = mod_event_channel.id
         events['on_kick']['channel'] = mod_event_channel.id
         events['on_ban']['channel'] = mod_event_channel.id
 
-        guild_config['events'] = events
         await message.edit(content=_('And we\'re all done!'))
-        return guild_config
+        return events
 
     async def setup(self):
         channel = self.context.channel
@@ -227,7 +225,6 @@ class GrenzpolizeiSetup:
         await asyncio.sleep(10)
 
         events = self.default_events
-        guild_config = {}
 
         # Member events
         events['on_member_join']['enabled'] = await self._yes_no(_('Do you want to track members joining? [y]es/[n]o'), self.context)
@@ -297,11 +294,7 @@ class GrenzpolizeiSetup:
             events['on_guild_role_update']['channel'] = await self._what_channel(_('Which channel should I use for this event? (please mention the channel)'), self.context)
 
         # Warning events
-        events['on_warning']['enabled'] = await self._yes_no(_('Do you want to track member warnings? [y]es/[n]o'), self.context)
-        if events['on_warning']['enabled']:
-            events['on_warning']['channel'] = await self._what_channel(_('Which channel should I use for this event? (please mention the channel)'), self.context)
-
-        events['on_kick']['enabled'] = await self._yes_no(_('Do you want to track member kicks? [y]es/[n]o'), self.context)
+            events['on_kick']['enabled'] = await self._yes_no(_('Do you want to track member kicks? [y]es/[n]o'), self.context)
         if events['on_kick']['enabled']:
             events['on_kick']['channel'] = await self._what_channel(_('Which channel should I use for this event? (please mention the channel)'), self.context)
 
@@ -309,6 +302,4 @@ class GrenzpolizeiSetup:
         if events['on_ban']['enabled']:
             events['on_ban']['channel'] = await self._what_channel(_('Which channel should I use for this event? (please mention the channel)'), self.context)
 
-        guild_config['events'] = events
-
-        return guild_config
+        return events

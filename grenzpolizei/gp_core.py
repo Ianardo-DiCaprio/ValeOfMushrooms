@@ -4,8 +4,8 @@ import discord
 import os
 from .gp_setup import GrenzpolizeiSetup
 import redbot.core.data_manager as datam
-import json
 from redbot.core.i18n import Translator
+from redbot.core import Config
 
 _ = Translator('GrenzpolizeiCore', __file__)
 
@@ -16,18 +16,26 @@ class GrenzpolizeiCore:
 
         self.path = str(datam.cog_data_path(self)).replace('\\', '/')
         self.attachment_path = self.path + '/attachments'
-        self.settings_file = 'settings'
 
         self.check_folder()
-        self.check_file()
-
-        self.bot.loop.create_task(self.load_settings())
 
         self.event_types = ['on_member_update', 'on_voice_state_update', 'on_message_edit', 'on_message_delete',
                             'on_raw_bulk_message_delete', 'on_guild_channel_create', 'on_guild_channel_delete',
                             'on_guild_channel_update', 'on_guild_update', 'on_guild_role_create', 'on_guild_role_delete',
                             'on_guild_role_update', 'on_member_ban', 'on_member_unban', 'on_member_kick',
-                            'on_member_remove', 'on_member_join', 'on_warning']
+                            'on_member_remove', 'on_member_join']
+
+        self.config = Config.get_conf(self, identifier=6198483584)
+        default_guild = {
+            'enabled': False,
+            'compact': False,
+            'events': {},
+            'ignore': {
+                'channels': {},
+                'members': {}
+            }
+        }
+        self.config.register_guild(**default_guild)
 
     def check_folder(self):
         if not os.path.exists(self.path):
@@ -35,112 +43,66 @@ class GrenzpolizeiCore:
         if not os.path.exists(self.attachment_path):
             os.mkdir(self.attachment_path)
 
-    def check_file(self):
-        if not os.path.exists(self.path + '/{}.json'.format(self.settings_file)):
-            self.save_json(self.settings_file, {})
+    async def enable_event(self, guild, channel, event_type):
+        async with self.config.guild(guild).events() as events:
+                events[event_type].update({'enable': True, 'channel': channel.id})
 
-    def save_json(self, filename, data):
-        with open(self.path + '/{}.json'.format(filename), encoding='utf-8', mode='w') as f:
-            json.dump(data, f, indent=4, sort_keys=True, separators=(',', ' : '))
-        return data
-
-    def load_json(self, filename):
-        with open(self.path + '/{}.json'.format(filename), encoding='utf-8', mode='r') as f:
-            data = json.load(f)
-        return data
-
-    async def load_settings(self):
-        self.settings = self.load_json(self.settings_file)
-
-    async def save_settings(self):
-        self.save_json(self.settings_file, self.settings)
-
-    async def _ignore_server_check(self, guild):
-        if str(guild.id) in self.settings:
-            if 'ignore' in self.settings[str(guild.id)]:
-                return True
-        return False
+    async def disable_event(self, guild, event_type):
+        async with self.config.guild(guild).events() as events:
+                events[event_type].update({'enable': False, 'channel': False})
 
     async def compactmode(self, guild):
-        if str(guild.id) in self.settings:
-            if 'compact' not in self.settings[str(guild.id)]:
-                self.settings[str(guild.id)]['compact'] = False
-            if self.settings[str(guild.id)]['compact']:
-                self.settings[str(guild.id)]['compact'] = False
-                await self.save_settings()
-                return _('Compact mode **disabled**')
-            else:
-                self.settings[str(guild.id)]['compact'] = True
-                await self.save_settings()
-                return _('Compact mode **enabled**')
+        if await self.config.guild(guild).compact():
+            await self.config.guild(guild).compact.set(False)
+            return _('Compact mode **disabled**')
         else:
-            return _('Please run the setup first!')
+            await self.config.guild(guild).compact.set(True)
+            return _('Compact mode **enabled**')
 
     async def ignoremember(self, guild, author):
-        if str(guild.id) in self.settings:
-            if 'ignore' not in self.settings[str(guild.id)]:
-                self.settings[str(guild.id)]['ignore'] = {}
-                self.settings[str(guild.id)]['ignore']['members'] = {}
-                self.settings[str(guild.id)]['ignore']['channels'] = {}
-
-            if str(author.id) in self.settings[str(guild.id)]['ignore']['members']:
-                del self.settings[str(guild.id)]['ignore']['members'][str(author.id)]
-                await self.save_settings()
-                return _('Tracking {} again').format(author.mention)
-            else:
-                self.settings[str(guild.id)]['ignore']['members'][str(author.id)] = True
-                await self.save_settings()
-                return _('Not tracking {} anymore').format(author.mention)
+        if str(author.id) in await self.config.guild(guild).ignore.members():
+            async with self.config.guild(guild).ignore.members() as members:
+                    members.pop(str(author.id), None)
+            return _('Tracking {} again').format(author.mention)
         else:
-            return _('Please run the setup first!')
+            async with self.config.guild(guild).ignore.members() as members:
+                    members.update({str(author.id): True})
+            return _('Not tracking {} anymore').format(author.mention)
 
     async def ignorechannel(self, guild, channel):
-        if str(guild.id) in self.settings:
-            if 'ignore' not in self.settings[str(guild.id)]:
-                self.settings[str(guild.id)]['ignore'] = {}
-                self.settings[str(guild.id)]['ignore']['members'] = {}
-                self.settings[str(guild.id)]['ignore']['channels'] = {}
-
-            if str(channel.id) in self.settings[str(guild.id)]['ignore']['channels']:
-                del self.settings[str(guild.id)]['ignore']['channels'][str(channel.id)]
-                await self.save_settings()
-                return _('Tracking {} again').format(channel.mention)
-            else:
-                self.settings[str(guild.id)]['ignore']['channels'][str(channel.id)] = True
-                await self.save_settings()
-                return _('Not tracking {} anymore').format(channel.mention)
+        if str(channel.id) in await self.config.guild(guild).ignore.channels():
+            async with self.config.guild(guild).ignore.channels() as channels:
+                    channels.pop(str(channel.id), None)
+            return _('Tracking {} again').format(channel.mention)
         else:
-            return _('Please run the setup first!')
+            async with self.config.guild(guild).ignore.channels() as channels:
+                    channels.update({str(channel.id): True})
+            return _('Not tracking {} anymore').format(channel.mention)
 
     async def _ignore(self, guild, author=None, channel=None):
-        if await self._ignore_server_check(guild):
-            if channel:
-                if str(channel.id) in self.settings[str(guild.id)]['ignore']['channels']:
-                    return False
-            if author:
-                if str(author.id) in self.settings[str(guild.id)]['ignore']['members']:
-                    return False
+        if channel:
+            if str(channel.id) in await self.config.guild(guild).ignore.channels():
+                return False
+        if author:
+            if str(author.id) in await self.config.guild(guild).ignore.members():
+                return False
         return True
 
-    async def _validate_server(self, guild):
-        return True if str(guild.id) in self.settings else False
-
     async def _validate_event(self, guild):
-        try:
-            return self.settings[str(guild.id)]['events'][inspect.stack()[1][3]]['enabled'] if await self._validate_server(guild) else False
-        except KeyError:
-            return False
+        events = await self.config.guild(guild).events()
+        return events[inspect.stack()[1][3]]['enabled'] if await self.config.guild(guild).enabled() else False
 
     async def _get_channel(self, guild):
         if not inspect.stack()[2][3] in ['_warn']:
-            return discord.utils.get(self.bot.get_all_channels(), id=self.settings[str(guild.id)]['events'][inspect.stack()[2][3]]['channel'])
+            events = await self.config.guild(guild).events()
+            return discord.utils.get(self.bot.get_all_channels(), id=events[inspect.stack()[2][3]]['channel'])
         return False
 
     async def _send_message_to_channel(self, guild, content=None, embed=None, attachment=None):
         channel = await self._get_channel(guild)
         if channel:
             if embed:
-                if not self.settings[str(guild.id)]['compact']:
+                if not await self.config.guild(guild).compact():
                     await channel.send(content=content, embed=embed)
                 else:
                     emdict = embed.to_dict()
@@ -160,34 +122,32 @@ class GrenzpolizeiCore:
             elif content:
                 await channel.send(content=content)
 
-    async def saveattachement(self, data, filename, message_id):
-        filename = '{}-{}'.format(str(message_id), filename)
-        with open(self.attachment_path+'/'+filename, 'wb') as f:
-            f.write(data)
-        return filename
-
     async def downloadattachment(self, url, filename, message_id):
         session = aiohttp.ClientSession()
         async with session.get(url) as r:
             data = await r.read()
-        await session.close()
-        filename = await self.saveattachement(data, filename, message_id)
-        return filename
+            with open(self.attachment_path+'/{}-{}'.format(message_id, filename), 'wb') as f:
+                f.write(data)
+        return '{}-{}'.format(message_id, filename)
 
     async def _start_setup(self, context):
         guild = context.guild
-        if guild.id not in self.settings:
-            self.settings[str(guild.id)] = {}
-        self.settings[str(guild.id)] = await GrenzpolizeiSetup(self.bot, context).setup()
-        self.settings[str(guild.id)]['compact'] = False
-        await self.save_settings()
+
+        events_data = await GrenzpolizeiSetup(self.bot, context).setup()
+
+        async with self.config.guild(guild).events() as events:
+                events.update(events_data)
+        await self.config.guild(guild).enabled.set(True)
+
         return True
 
     async def _start_auto_setup(self, context):
         guild = context.guild
-        if guild.id not in self.settings:
-            self.settings[str(guild.id)] = {}
-        self.settings[str(guild.id)] = await GrenzpolizeiSetup(self.bot, context).auto_setup()
-        self.settings[str(guild.id)]['compact'] = False
-        await self.save_settings()
+
+        events_data = await GrenzpolizeiSetup(self.bot, context).auto_setup()
+
+        async with self.config.guild(guild).events() as events:
+                events.update(events_data)
+        await self.config.guild(guild).enabled.set(True)
+
         return True
