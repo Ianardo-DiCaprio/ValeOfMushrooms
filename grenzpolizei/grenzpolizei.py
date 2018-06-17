@@ -10,6 +10,10 @@ _ = Translator('Grenzpolizei', __file__)
 # Documentation
 # Compartamentalize voice updating
 # A way to show all settings (needs a complete rework, removed for now)
+# Make embed a decorator
+
+# Changelog:
+# - Fixed a bug where a ban event would not report to the event channel.
 
 
 class Grenzpolizei:
@@ -174,7 +178,7 @@ class Grenzpolizei:
 
             embed = discord.Embed(color=self.red)
             embed.set_author(name=_('Member has been banned'))
-            embed.add_field(name=_('**Mod**'), value='{0.display_name}').format(the_mod)
+            embed.add_field(name=_('**Mod**'), value='{0.display_name}'.format(the_mod))
             embed.add_field(name=_('**Member**'), value='**{0.name}#{0.discriminator}** ({0.display_name} {0.id})'.format(author), inline=False)
             embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
 
