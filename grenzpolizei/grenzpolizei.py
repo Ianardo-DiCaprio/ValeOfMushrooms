@@ -13,7 +13,7 @@ _ = Translator('Grenzpolizei', __file__)
 # Make embed a decorator
 
 # Changelog:
-# - Fixed a bug where a ban event would not report to the event channel.
+# -
 
 
 class Grenzpolizei:
@@ -368,24 +368,24 @@ class Grenzpolizei:
 
                 if before.name != after.name:
                     embed = discord.Embed(color=self.blue)
-                    embed.set_author(name=_('#{0.name} renamed to #{1.name} by {2.display_name}').format(before, after, the_mod))
+                    embed.set_author(name=_('#{0.name} renamed to #{1.name} by {0.display_name}').format(the_mod, before, after))
                     embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                     await self.core._send_message_to_channel(guild, embed=embed)
                 if not isinstance(channel, discord.VoiceChannel) and not isinstance(channel, discord.CategoryChannel):
                     if before.topic != after.topic:
                         embed = discord.Embed(color=self.blue)
-                        embed.set_author(name=_('#{0.name} changed topic from \'{0.topic}\' to \'{1.topic}\'').format(before, after))
+                        embed.set_author(name=_('#{0.name} changed topic from \'{1.topic}\' to \'{2.topic}\'').format(the_mod, before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
                 if before.position != after.position:
                     if isinstance(channel, discord.CategoryChannel):
                         embed = discord.Embed(color=self.blue)
-                        embed.set_author(name=_('Category moved by #{0.name} from {0.position} to {1.position}').format(before, after))
+                        embed.set_author(name=_('Category moved by #{0.name} from {1.position} to {2.position}').format(the_mod, before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
                     else:
                         embed = discord.Embed(color=self.blue)
-                        embed.set_author(name=_('Channel moved  by #{0.name} from {0.position} to {1.position}').format(before, after))
+                        embed.set_author(name=_('Channel moved  by #{0.name} from {1.position} to {2.position}').format(the_mod, before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
 
