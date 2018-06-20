@@ -12,9 +12,6 @@ _ = Translator('Grenzpolizei', __file__)
 # A way to show all settings (needs a complete rework, removed for now)
 # Make embed a decorator
 
-# Changelog:
-# -
-
 
 class Grenzpolizei:
     def __init__(self, bot):
@@ -361,7 +358,7 @@ class Grenzpolizei:
             guild = after.guild
 
             if await self.core._validate_event(guild):
-
+                the_mod = None
                 async for entry in guild.audit_logs(limit=1):
                     if entry.action is discord.AuditLogAction.channel_update:
                         the_mod = entry.user
