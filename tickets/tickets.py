@@ -19,7 +19,7 @@ class Ticketing:
         }
         self.config.register_guild(**default_guild)
 
-        self.ticket_info_format = '**[{datetime}]** [{author}]\n{information}\n\n'
+        self.ticket_info_format = '\n\n**[{datetime}]** [{author}]\n{information}'
 
     @commands.group(name='ticket')
     async def _ticket(self, context):
