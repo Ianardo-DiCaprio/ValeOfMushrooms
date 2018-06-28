@@ -110,10 +110,6 @@ class GrenzpolizeiSetup:
                     pass
                 return True
         await bot_message.edit(content=_('**{} No**').format(question))
-        try:
-            await message.delete()
-        except discord.Forbidden:
-            pass
         return False
 
     async def _what_channel(self, question, context):
