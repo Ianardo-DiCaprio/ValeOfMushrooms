@@ -322,10 +322,10 @@ class Grenzpolizei:
 
                 if isinstance(channel, discord.CategoryChannel):
                     embed = discord.Embed(color=self.green)
-                    embed.set_author(name=_('A new category has been created by {0.display_name}: #{1.name}').format(the_mod, channel))
+                    embed.set_author(name=_('{0.display_name} created category #{1.name}').format(the_mod, channel))
                 else:
                     embed = discord.Embed(color=self.green)
-                    embed.set_author(name=_('A new channel has been created by {0.display_name}: #{1.name}').format(the_mod, channel))
+                    embed.set_author(name=_('{0.display_name} created channel #{1.name}').format(the_mod, channel))
 
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
 
@@ -343,10 +343,10 @@ class Grenzpolizei:
 
                 if isinstance(channel, discord.CategoryChannel):
                     embed = discord.Embed(color=self.red)
-                    embed.set_author(name=_('A category has been deleted by {0.display_name}: #{1.name}').format(the_mod, channel))
+                    embed.set_author(name=_('{0.display_name} deleted category #{1.name}').format(the_mod, channel))
                 else:
                     embed = discord.Embed(color=self.red)
-                    embed.set_author(name=_('A channel has been deleted by {0.display_name}: #{1.name}').format(the_mod, channel))
+                    embed.set_author(name=_('{0.display_name} deleted channel #{1.name}').format(the_mod, channel))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
 
                 await self.core._send_message_to_channel(guild, embed=embed)
@@ -365,24 +365,24 @@ class Grenzpolizei:
 
                 if before.name != after.name:
                     embed = discord.Embed(color=self.blue)
-                    embed.set_author(name=_('#{0.name} renamed to #{1.name} by {0.display_name}').format(the_mod, before, after))
+                    embed.set_author(name=_('{0.display_name} renamed #{1.name} to #{2.name}').format(the_mod, before, after))
                     embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                     await self.core._send_message_to_channel(guild, embed=embed)
                 if not isinstance(channel, discord.VoiceChannel) and not isinstance(channel, discord.CategoryChannel):
                     if before.topic != after.topic:
                         embed = discord.Embed(color=self.blue)
-                        embed.set_author(name=_('#{0.name} changed topic from \'{1.topic}\' to \'{2.topic}\'').format(the_mod, before, after))
+                        embed.set_author(name=_('{0.display_name} changed topic of #{1.name} from \'{1.topic}\' to \'{2.topic}\'').format(the_mod, before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
                 if before.position != after.position:
                     if isinstance(channel, discord.CategoryChannel):
                         embed = discord.Embed(color=self.blue)
-                        embed.set_author(name=_('Category moved by #{0.name} from {1.position} to {2.position}').format(the_mod, before, after))
+                        embed.set_author(name=_('{0.display_name} moved category #{1.name} from {1.position} to {2.position}').format(the_mod, before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
                     else:
                         embed = discord.Embed(color=self.blue)
-                        embed.set_author(name=_('Channel moved  by #{0.name} from {1.position} to {2.position}').format(the_mod, before, after))
+                        embed.set_author(name=_('{0.display_name} moved channel #{1.name} from {1.position} to {2.position}').format(the_mod, before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
 
@@ -398,9 +398,9 @@ class Grenzpolizei:
 
             embed = discord.Embed(color=self.green)
             if the_mod:
-                embed.set_author(name=_('Role created by {0.display_name}: {1.name}').format(the_mod, role))
+                embed.set_author(name=_('{0.display_name} created role {1.name}').format(the_mod, role))
             else:
-                embed.set_author(name=_('Role created by Discord: {1.name}').format(the_mod, role))
+                embed.set_author(name=_('Role {1.name} has been created').format(role))
             embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
 
             await self.core._send_message_to_channel(guild, embed=embed)
@@ -415,7 +415,7 @@ class Grenzpolizei:
                     the_mod = entry.user
 
             embed = discord.Embed(color=self.red)
-            embed.set_author(name=_('Role deleted by {0.display_name}: {1.name}').format(the_mod, role))
+            embed.set_author(name=_('{0.display_name} deleted role {1.name}').format(the_mod, role))
             embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
 
             await self.core._send_message_to_channel(guild, embed=embed)
