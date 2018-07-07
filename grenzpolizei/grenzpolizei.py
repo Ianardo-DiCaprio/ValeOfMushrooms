@@ -164,10 +164,8 @@ class Grenzpolizei:
     async def on_member_ban(self, guild, author):
         if await self.core._validate_event(guild) and author.id != self.bot.user.id:
 
-            the_mod = None
             async for entry in guild.audit_logs(limit=2):
-                if entry.target.id == author.id and entry.action is discord.AuditLogAction.ban:
-                    the_mod = entry.user
+                if entry.action is discord.AuditLogAction.ban:
                     if entry.reason:
                         reason = entry.reason
                     else:
@@ -175,8 +173,7 @@ class Grenzpolizei:
 
             embed = discord.Embed(color=self.red)
             embed.set_author(name=_('Member has been banned'))
-            embed.add_field(name=_('**Mod**'), value='{0.display_name}'.format(the_mod))
-            embed.add_field(name=_('**Member**'), value='**{0.name}#{0.discriminator}** ({0.display_name} {0.id})'.format(author), inline=False)
+            embed.add_field(name=_('**Member**'), value='**{0.name}#{0.discriminator}** ({0.name} {0.id})'.format(author), inline=False)
             embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
 
             if reason:
@@ -187,14 +184,9 @@ class Grenzpolizei:
     async def on_member_unban(self, guild, author):
         if await self.core._validate_event(guild) and author.id != self.bot.user.id:
 
-            async for entry in guild.audit_logs(limit=1):
-                if entry.action is discord.AuditLogAction.unban:
-                    the_mod = entry.user
-
             embed = discord.Embed(color=self.orange)
             embed.set_author(name=_('Member has been unbanned'))
-            embed.add_field(name=_('**Mod**'), value='{0.display_name}'.format(the_mod))
-            embed.add_field(name=_('**Member**'), value='**{0.name}#{0.discriminator}** ({0.display_name} {0.id})'.format(author), inline=False)
+            embed.add_field(name=_('**Member**'), value='**{0.name}#{0.discriminator}** ({0.name} {0.id})'.format(author), inline=False)
             embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
 
             await self.core._send_message_to_channel(guild, embed=embed)
@@ -203,7 +195,7 @@ class Grenzpolizei:
         guild = author.guild
         if await self.core._validate_event(guild) and author.id != self.bot.user.id:
 
-            embed = discord.Embed(color=self.red, description=_('**{0.name}#{0.discriminator}** ({0.display_name} {0.id})').format(author))
+            embed = discord.Embed(color=self.red, description=_('**{0.name}#{0.discriminator}** ({0.name} {0.id})').format(author))
             embed.set_author(name=_('Member left'))
             embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
 
@@ -217,21 +209,12 @@ class Grenzpolizei:
 
             if await self.core._validate_event(guild) and after.id != self.bot.user.id:
 
-                async for entry in guild.audit_logs(limit=1):
-                    by_mod = False
-
-                    if entry.action is discord.AuditLogAction.member_update:
-                        the_mod = entry.user
-                        by_mod = True
-
                 if before.name != after.name:
                     embed = discord.Embed(color=self.blue, description=_('From **{0.name}** ({0.id}) to **{1.name}**').format(before, after))
                     embed.set_author(name=_('Name changed'))
                     await self.core._send_message_to_channel(guild, embed=embed)
                 if before.nick != after.nick:
                     embed = discord.Embed(color=self.blue, description=_('From **{0.nick}** ({0.id}) to **{1.nick}**').format(before, after))
-                    if by_mod:
-                        embed.set_author(name=_('Nickname changed by {0.display_name}').format(the_mod))
                     else:
                         embed.set_author(name=_('Nickname changed'))
                     await self.core._send_message_to_channel(guild, embed=embed)
@@ -240,19 +223,13 @@ class Grenzpolizei:
                     if len(before.roles) > len(after.roles):
                         for role in before.roles:
                             if role not in after.roles:
-                                embed = discord.Embed(color=self.blue, description=_('**{0.display_name}** ({0.id}) lost the **{1.name}** role').format(before, role))
-                                if by_mod:
-                                    embed.set_author(name=_('Role removed by {0.display_name}').format(the_mod))
-                                else:
-                                    embed.set_author(name=_('Role removed'))
+                                embed = discord.Embed(color=self.blue, description=_('**{0.name}** ({0.id}) lost role **{1.name}**').format(before, role))
+                                embed.set_author(name=_('Role removed'))
                     elif len(before.roles) < len(after.roles):
                         for role in after.roles:
                             if role not in before.roles:
-                                embed = discord.Embed(color=self.blue, description=_('**{0.display_name}** ({0.id}) got the **{1.name}** role').format(before, role))
-                                if by_mod:
-                                    embed.set_author(name=_('Role applied by {0.display_name}').format(the_mod))
-                                else:
-                                    embed.set_author(name=_('Role applied'))
+                                embed = discord.Embed(color=self.blue, description=_('**{0.name}** ({0.id}) got role **{1.name}**').format(before, role))
+                                embed.set_author(name=_('Role applied'))
                     await self.core._send_message_to_channel(guild, embed=embed)
 
     async def on_message_delete(self, message):
@@ -264,18 +241,10 @@ class Grenzpolizei:
             if await self.core._ignore(guild, author=author, channel=channel):
 
                 if await self.core._validate_event(guild) and author.id != self.bot.user.id:
-                    the_mod = False
-
-                    async for entry in guild.audit_logs(limit=1):
-                        if entry.action is discord.AuditLogAction.message_delete:
-                            the_mod = entry.user
 
                     embed = discord.Embed(color=self.red)
-
                     embed.set_author(name=_('Message removed'))
-                    embed.add_field(name=_('Member'), value='{0.display_name}#{0.discriminator}\n({0.id})'.format(author))
-                    if the_mod:
-                        embed.add_field(name=_('Removed by'), value=_('{0.display_name}#{0.discriminator}\n({0.id})'.format(the_mod)))
+                    embed.add_field(name=_('Member'), value='{0.name}#{0.discriminator}\n({0.id})'.format(author))
 
                     embed.add_field(name=_('Channel'), value=message.channel.mention)
                     if message.content:
@@ -302,7 +271,7 @@ class Grenzpolizei:
 
                     embed = discord.Embed(color=self.blue)
                     embed.set_author(name=_('Message changed'))
-                    embed.add_field(name=_('Member'), value='{0.display_name}#{0.discriminator}\n({0.id})'.format(author))
+                    embed.add_field(name=_('Member'), value='{0.name}#{0.discriminator}\n({0.id})'.format(author))
                     embed.add_field(name=_('Channel'), value=before.channel.mention)
                     embed.add_field(name=_('Before'), value=before.clean_content, inline=False)
                     embed.add_field(name=_('After'), value=after.clean_content, inline=False)
@@ -316,16 +285,12 @@ class Grenzpolizei:
 
             if await self.core._validate_event(guild):
 
-                async for entry in guild.audit_logs(limit=1):
-                    if entry.action is discord.AuditLogAction.channel_create:
-                        the_mod = entry.user
-
                 if isinstance(channel, discord.CategoryChannel):
                     embed = discord.Embed(color=self.green)
-                    embed.set_author(name=_('{0.display_name} created category #{1.name}').format(the_mod, channel))
+                    embed.set_author(name=_('Category {0.name} created').format(channel))
                 else:
                     embed = discord.Embed(color=self.green)
-                    embed.set_author(name=_('{0.display_name} created channel #{1.name}').format(the_mod, channel))
+                    embed.set_author(name=_('Channel #{0.name} created').format(channel))
 
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
 
@@ -337,16 +302,12 @@ class Grenzpolizei:
 
             if await self.core._validate_event(guild):
 
-                async for entry in guild.audit_logs(limit=1):
-                    if entry.action is discord.AuditLogAction.channel_delete:
-                        the_mod = entry.user
-
                 if isinstance(channel, discord.CategoryChannel):
                     embed = discord.Embed(color=self.red)
-                    embed.set_author(name=_('{0.display_name} deleted category #{1.name}').format(the_mod, channel))
+                    embed.set_author(name=_('Category {0.name} deleted').format(channel))
                 else:
                     embed = discord.Embed(color=self.red)
-                    embed.set_author(name=_('{0.display_name} deleted channel #{1.name}').format(the_mod, channel))
+                    embed.set_author(name=_('Channel #{0.name} deleted').format(channel))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
 
                 await self.core._send_message_to_channel(guild, embed=embed)
@@ -358,31 +319,36 @@ class Grenzpolizei:
             guild = after.guild
 
             if await self.core._validate_event(guild):
-                the_mod = None
-                async for entry in guild.audit_logs(limit=1):
-                    if entry.action is discord.AuditLogAction.channel_update:
-                        the_mod = entry.user
-
                 if before.name != after.name:
                     embed = discord.Embed(color=self.blue)
-                    embed.set_author(name=_('{0.display_name} renamed #{1.name} to #{2.name}').format(the_mod, before, after))
+                    if isinstance(channel, discord.CategoryChannel):
+                        embed.set_author(name=_('Category {0.name} renamed to {1.name}').format(before, after))
+                    elif isinstance(channel, discord.VoiceChannel):
+                        embed.set_author(name=_('Voice channel #{0.name} renamed to #{1.name}').format(before, after))
+                    elif isinstance(channel, discord.TextChannel):
+                        embed.set_author(name=_('Channel #{0.name} renamed to #{1.name}').format(before, after))
                     embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                     await self.core._send_message_to_channel(guild, embed=embed)
                 if not isinstance(channel, discord.VoiceChannel) and not isinstance(channel, discord.CategoryChannel):
                     if before.topic != after.topic:
                         embed = discord.Embed(color=self.blue)
-                        embed.set_author(name=_('{0.display_name} changed topic of #{1.name} from \'{1.topic}\' to \'{2.topic}\'').format(the_mod, before, after))
+                        embed.set_author(name=_('Topic of #{1.name} changed from \'{0.topic}\' to \'{1.topic}\'').format(before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
                 if before.position != after.position:
                     if isinstance(channel, discord.CategoryChannel):
                         embed = discord.Embed(color=self.blue)
-                        embed.set_author(name=_('{0.display_name} moved category #{1.name} from {1.position} to {2.position}').format(the_mod, before, after))
+                        embed.set_author(name=_('Category {0.name} moved from {0.position} to {1.position}').format(before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
-                    else:
+                    elif isinstance(channel, discord.VoiceChannel):
                         embed = discord.Embed(color=self.blue)
-                        embed.set_author(name=_('{0.display_name} moved channel #{1.name} from {1.position} to {2.position}').format(the_mod, before, after))
+                        embed.set_author(name=_('Voice channel #{0.name} moved from {0.position} to {1.position}').format(before, after))
+                        embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
+                        await self.core._send_message_to_channel(guild, embed=embed)
+                    if isinstance(channel, discord.TextChannel):
+                        embed = discord.Embed(color=self.blue)
+                        embed.set_author(name=_('Channel #{0.name} moved from {0.position} to {1.position}').format(before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
 
@@ -390,17 +356,9 @@ class Grenzpolizei:
         guild = role.guild
 
         if await self.core._validate_event(guild):
-            the_mod = False
-
-            async for entry in guild.audit_logs(limit=1):
-                if entry.action is discord.AuditLogAction.role_create:
-                    the_mod = entry.user
 
             embed = discord.Embed(color=self.green)
-            if the_mod:
-                embed.set_author(name=_('{0.display_name} created role {1.name}').format(the_mod, role))
-            else:
-                embed.set_author(name=_('Role {1.name} has been created').format(role))
+            embed.set_author(name=_('Role {0.name} has been created').format(role))
             embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
 
             await self.core._send_message_to_channel(guild, embed=embed)
@@ -410,12 +368,8 @@ class Grenzpolizei:
 
         if await self.core._validate_event(guild):
 
-            async for entry in guild.audit_logs(limit=1):
-                if entry.action is discord.AuditLogAction.role_delete:
-                    the_mod = entry.user
-
             embed = discord.Embed(color=self.red)
-            embed.set_author(name=_('{0.display_name} deleted role {1.name}').format(the_mod, role))
+            embed.set_author(name=_('Role {0.name} has been deleted').format(role))
             embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
 
             await self.core._send_message_to_channel(guild, embed=embed)
@@ -424,74 +378,65 @@ class Grenzpolizei:
         guild = after.guild
 
         if await self.core._validate_event(guild):
-            the_mod = None
-
-            async for entry in guild.audit_logs(limit=1):
-                if entry.action is discord.AuditLogAction.role_update:
-                    the_mod = entry.user
-
             if before.name != after.name and after:
                 embed = discord.Embed(color=self.blue)
-                embed.set_author(name=_('Role {0.name} renamed to {1.name} by {2.display_name}').format(before, after, the_mod))
+                embed.set_author(name=_('Role {0.name} renamed to {1.name}').format(before, after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
             if before.color != after.color:
                 embed = discord.Embed(color=self.blue)
-                embed.set_author(name=_('Role color for {0.name} changed from {0.color} to {1.color} by {2.display_name}').format(before, after, the_mod))
+                embed.set_author(name=_('Role color for {0.name} changed from {0.color} to {1.color}').format(before, after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
             if before.mentionable != after.mentionable:
                 embed = discord.Embed(color=self.blue)
                 if after.mentionable:
-                    embed.set_author(name=_('{0.display_name} made role {1.name} mentionable').format(the_mod, after))
+                    embed.set_author(name=_('{Role {0.name} has been made mentionable').format(after))
                 else:
-                    embed.set_author(name=_('{0.display_name} made role  {1.name} unmentionable').format(the_mod, after))
+                    embed.set_author(name=_('Role {0.name} has been made unmentionable').format(after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
             if before.hoist != after.hoist:
                 embed = discord.Embed(color=self.blue)
                 if after.hoist:
-                    embed.set_author(name=_('{0.display_name} made role {1.name} to be shown seperately').format(the_mod, after))
+                    embed.set_author(name=_('Role {0.name} is now shown seperately').format(after))
                 else:
-                    embed.set_author(name=_('{0.display_name} made role {1.name} to be shown seperately').format(the_mod, after))
+                    embed.set_author(name=_('Role {0.name} is now not shown seperately anymore').format(after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
             if before.permissions != after.permissions:
                 embed = discord.Embed(color=self.blue)
-                embed.set_author(name=_('Role permissions {0.name} changed from {0.permissions.value} to {1.permissions.value} by {2.display_name}').format(before, after, the_mod))
+                embed.set_author(name=_('Role {0.name} changed permissions from {0.permissions.value} to {1.permissions.value}').format(before, after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
             if before.position != after.position:
                 embed = discord.Embed(color=self.blue)
-                embed.set_author(name=_('Role position {0} changed from {0.position} to {1.position} by {2.display_name}').format(before, after, the_mod))
+                embed.set_author(name=_('Role {0.name} changed position from {0.position} to {1.position}').format(before, after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
 
     async def on_guild_update(self, before, after):
         guild = after
         if await self.core._validate_event(guild):
-            async for entry in guild.audit_logs(limit=1):
-                if entry.action is discord.AuditLogAction.guild_update:
-                    the_mod = entry.user
             if before.owner != after.owner:
                 embed = discord.Embed(color=self.blue)
                 embed.set_author(name=_('Server owner changed from {0.owner.name} (id {0.owner.id})'
-                                        'to {1.owner.name} (id {1.owner.id}) by {2.display_name}').format(before, after, the_mod))
+                                        'to {1.owner.name} (id {1.owner.id})').format(before, after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
             if before.region != after.region:
                 embed = discord.Embed(color=self.blue)
-                embed.set_author(name=_('Server region changed from {0.region} to {1.region} by {2.display_name}').format(before, after, the_mod))
+                embed.set_author(name=_('Server region changed from {0.region} to {1.region}').format(before, after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
             if before.name != after.name:
                 embed = discord.Embed(color=self.blue)
-                embed.set_author(name=_('Server name changed from {0.name} to {1.name} by {2.display_name}').format(before, after, the_mod))
+                embed.set_author(name=_('Server name changed from {0.name} to {1.name}').format(before, after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
             if before.icon_url != after.icon_url:
                 embed = discord.Embed(color=self.blue)
-                embed.set_author(name=_('Server icon changed from {0.icon_url} to {1.icon_url} by {2.display_name}').format(before, after, the_mod))
+                embed.set_author(name=_('Server icon changed from {0.icon_url} to {1.icon_url}').format(before, after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
 
@@ -501,41 +446,41 @@ class Grenzpolizei:
             if await self.core._validate_event(guild):
                 if not before.afk and after.afk:
                     embed = discord.Embed(color=self.blue)
-                    embed.set_author(name=_('{0.display_name} is idle and has been sent to #{1.channel}').format(author, after), icon_url=author.avatar_url)
+                    embed.set_author(name=_('{0.name} is idle and has been sent to #{1.channel}').format(author, after), icon_url=author.avatar_url)
                     embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                     await self.core._send_message_to_channel(guild, embed=embed)
                 elif before.afk and not after.afk:
                     embed = discord.Embed(color=self.blue)
-                    embed.set_author(name=_('{0.display_name} is active again in #{1.channel}').format(author, after), icon_url=author.avatar_url)
+                    embed.set_author(name=_('{0.name} is active again in #{1.channel}').format(author, after), icon_url=author.avatar_url)
                     embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                     await self.core._send_message_to_channel(guild, embed=embed)
                 if not before.self_mute and after.self_mute:
                     embed = discord.Embed(color=self.blue)
-                    embed.set_author(name=_('{0.display_name} muted themselves in #{1.channel}').format(author, after), icon_url=author.avatar_url)
+                    embed.set_author(name=_('{0.name} muted themselves in #{1.channel}').format(author, after), icon_url=author.avatar_url)
                     embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                     await self.core._send_message_to_channel(guild, embed=embed)
                 elif before.self_mute and not after.self_mute:
                     embed = discord.Embed(color=self.blue)
-                    embed.set_author(name=_('{0.display_name} unmuted themselves in #{1.channel}').format(author, after), icon_url=author.avatar_url)
+                    embed.set_author(name=_('{0.name} unmuted themselves in #{1.channel}').format(author, after), icon_url=author.avatar_url)
                     embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                     await self.core._send_message_to_channel(guild, embed=embed)
                 if not before.self_deaf and after.self_deaf:
                     embed = discord.Embed(color=self.blue)
-                    embed.set_author(name=_('{0.display_name} deafened themselves in #{1.channel}').format(author, after), icon_url=author.avatar_url)
+                    embed.set_author(name=_('{0.name} deafened themselves in #{1.channel}').format(author, after), icon_url=author.avatar_url)
                     embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                     await self.core._send_message_to_channel(guild, embed=embed)
                 elif before.self_deaf and not after.self_deaf:
                     embed = discord.Embed(color=self.blue)
-                    embed.set_author(name=_('{0.display_name} undeafened themselves in #{1.channel}').format(author, after), icon_url=author.avatar_url)
+                    embed.set_author(name=_('{0.name} undeafened themselves in #{1.channel}').format(author, after), icon_url=author.avatar_url)
                     embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                     await self.core._send_message_to_channel(guild, embed=embed)
                 if not before.channel and after.channel:
                     embed = discord.Embed(color=self.blue)
-                    embed.set_author(name=_('{0.display_name} joined voice channel #{1.channel}').format(author, after), icon_url=author.avatar_url)
+                    embed.set_author(name=_('{0.name} joined voice channel #{1.channel}').format(author, after), icon_url=author.avatar_url)
                     embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                     await self.core._send_message_to_channel(guild, embed=embed)
                 elif before.channel and not after.channel:
                     embed = discord.Embed(color=self.blue)
-                    embed.set_author(name=_('{0.display_name} left voice channel #{1.channel}').format(author, before), icon_url=author.avatar_url)
+                    embed.set_author(name=_('{0.name} left voice channel #{1.channel}').format(author, before), icon_url=author.avatar_url)
                     embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                     await self.core._send_message_to_channel(guild, embed=embed)

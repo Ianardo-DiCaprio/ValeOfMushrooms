@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2018-06-29 09:01+0200\n"
+"POT-Creation-Date: 2018-07-07 18:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -218,231 +218,223 @@ msgstr ""
 msgid "Member joined"
 msgstr ""
 
-#: grenzpolizei.py:177
+#: grenzpolizei.py:175
 msgid "Member has been banned"
 msgstr ""
 
-#: grenzpolizei.py:178 grenzpolizei.py:196
-msgid "**Mod**"
-msgstr ""
-
-#: grenzpolizei.py:179 grenzpolizei.py:197
+#: grenzpolizei.py:176 grenzpolizei.py:189
 msgid "**Member**"
 msgstr ""
 
-#: grenzpolizei.py:195
+#: grenzpolizei.py:188
 msgid "Member has been unbanned"
 msgstr ""
 
-#: grenzpolizei.py:206
-msgid "**{0.name}#{0.discriminator}** ({0.display_name} {0.id})"
+#: grenzpolizei.py:198
+msgid "**{0.name}#{0.discriminator}** ({0.name} {0.id})"
 msgstr ""
 
-#: grenzpolizei.py:207
+#: grenzpolizei.py:199
 msgid "Member left"
 msgstr ""
 
-#: grenzpolizei.py:228
+#: grenzpolizei.py:213
 msgid "From **{0.name}** ({0.id}) to **{1.name}**"
 msgstr ""
 
-#: grenzpolizei.py:229
+#: grenzpolizei.py:214
 msgid "Name changed"
 msgstr ""
 
-#: grenzpolizei.py:232
+#: grenzpolizei.py:217
 msgid "From **{0.nick}** ({0.id}) to **{1.nick}**"
 msgstr ""
 
-#: grenzpolizei.py:234
-msgid "Nickname changed by {0.display_name}"
-msgstr ""
-
-#: grenzpolizei.py:236
+#: grenzpolizei.py:219
 msgid "Nickname changed"
 msgstr ""
 
-#: grenzpolizei.py:243
-msgid "**{0.display_name}** ({0.id}) lost the **{1.name}** role"
+#: grenzpolizei.py:226
+msgid "**{0.name}** ({0.id}) lost role **{1.name}**"
 msgstr ""
 
-#: grenzpolizei.py:245
-msgid "Role removed by {0.display_name}"
-msgstr ""
-
-#: grenzpolizei.py:247
+#: grenzpolizei.py:227
 msgid "Role removed"
 msgstr ""
 
-#: grenzpolizei.py:251
-msgid "**{0.display_name}** ({0.id}) got the **{1.name}** role"
+#: grenzpolizei.py:231
+msgid "**{0.name}** ({0.id}) got role **{1.name}**"
 msgstr ""
 
-#: grenzpolizei.py:253
-msgid "Role applied by {0.display_name}"
-msgstr ""
-
-#: grenzpolizei.py:255
+#: grenzpolizei.py:232
 msgid "Role applied"
 msgstr ""
 
-#: grenzpolizei.py:275
+#: grenzpolizei.py:246
 msgid "Message removed"
 msgstr ""
 
-#: grenzpolizei.py:276 grenzpolizei.py:305
+#: grenzpolizei.py:247 grenzpolizei.py:274
 msgid "Member"
 msgstr ""
 
-#: grenzpolizei.py:278
-msgid "Removed by"
-msgstr ""
-
-#: grenzpolizei.py:280 grenzpolizei.py:306
+#: grenzpolizei.py:249 grenzpolizei.py:275
 msgid "Channel"
 msgstr ""
 
-#: grenzpolizei.py:282
+#: grenzpolizei.py:251
 msgid "Message"
 msgstr ""
 
-#: grenzpolizei.py:284 grenzpolizei.py:309
+#: grenzpolizei.py:253 grenzpolizei.py:278
 msgid "Message ID: {} | {}"
 msgstr ""
 
-#: grenzpolizei.py:291
+#: grenzpolizei.py:260
 msgid "Attachment file for message: {}"
 msgstr ""
 
-#: grenzpolizei.py:304
+#: grenzpolizei.py:273
 msgid "Message changed"
 msgstr ""
 
-#: grenzpolizei.py:307
+#: grenzpolizei.py:276
 msgid "Before"
 msgstr ""
 
-#: grenzpolizei.py:308
+#: grenzpolizei.py:277
 msgid "After"
 msgstr ""
 
-#: grenzpolizei.py:325
-msgid "{0.display_name} created category #{1.name}"
+#: grenzpolizei.py:290
+msgid "Category {0.name} created"
 msgstr ""
 
-#: grenzpolizei.py:328
-msgid "{0.display_name} created channel #{1.name}"
+#: grenzpolizei.py:293
+msgid "Channel #{0.name} created"
+msgstr ""
+
+#: grenzpolizei.py:307
+msgid "Category {0.name} deleted"
+msgstr ""
+
+#: grenzpolizei.py:310
+msgid "Channel #{0.name} deleted"
+msgstr ""
+
+#: grenzpolizei.py:325
+msgid "Category {0.name} renamed to {1.name}"
+msgstr ""
+
+#: grenzpolizei.py:327
+msgid "Voice channel #{0.name} renamed to #{1.name}"
+msgstr ""
+
+#: grenzpolizei.py:329
+msgid "Channel #{0.name} renamed to #{1.name}"
+msgstr ""
+
+#: grenzpolizei.py:335
+msgid "Topic of #{1.name} changed from '{0.topic}' to '{1.topic}'"
+msgstr ""
+
+#: grenzpolizei.py:341
+msgid "Category {0.name} moved from {0.position} to {1.position}"
 msgstr ""
 
 #: grenzpolizei.py:346
-msgid "{0.display_name} deleted category #{1.name}"
+msgid "Voice channel #{0.name} moved from {0.position} to {1.position}"
 msgstr ""
 
-#: grenzpolizei.py:349
-msgid "{0.display_name} deleted channel #{1.name}"
+#: grenzpolizei.py:351
+msgid "Channel #{0.name} moved from {0.position} to {1.position}"
 msgstr ""
 
-#: grenzpolizei.py:368
-msgid "{0.display_name} renamed #{1.name} to #{2.name}"
+#: grenzpolizei.py:361
+msgid "Role {0.name} has been created"
 msgstr ""
 
-#: grenzpolizei.py:374
-msgid "{0.display_name} changed topic of #{1.name} from '{1.topic}' to '{2.topic}'"
+#: grenzpolizei.py:372
+msgid "Role {0.name} has been deleted"
 msgstr ""
 
-#: grenzpolizei.py:380
-msgid "{0.display_name} moved category #{1.name} from {1.position} to {2.position}"
+#: grenzpolizei.py:383
+msgid "Role {0.name} renamed to {1.name}"
 msgstr ""
 
-#: grenzpolizei.py:385
-msgid "{0.display_name} moved channel #{1.name} from {1.position} to {2.position}"
+#: grenzpolizei.py:388
+msgid "Role color for {0.name} changed from {0.color} to {1.color}"
 msgstr ""
 
-#: grenzpolizei.py:401
-msgid "{0.display_name} created role {1.name}"
+#: grenzpolizei.py:394
+msgid "{Role {0.name} has been made mentionable"
 msgstr ""
 
-#: grenzpolizei.py:403
-msgid "Role {1.name} has been created"
+#: grenzpolizei.py:396
+msgid "Role {0.name} has been made unmentionable"
 msgstr ""
 
-#: grenzpolizei.py:418
-msgid "{0.display_name} deleted role {1.name}"
+#: grenzpolizei.py:402
+msgid "Role {0.name} is now shown seperately"
 msgstr ""
 
-#: grenzpolizei.py:435
-msgid "Role {0.name} renamed to {1.name} by {2.display_name}"
+#: grenzpolizei.py:404
+msgid "Role {0.name} is now not shown seperately anymore"
 msgstr ""
 
-#: grenzpolizei.py:440
-msgid "Role color for {0.name} changed from {0.color} to {1.color} by {2.display_name}"
+#: grenzpolizei.py:409
+msgid "Role {0.name} changed permissions from {0.permissions.value} to {1.permissions.value}"
 msgstr ""
 
-#: grenzpolizei.py:446
-msgid "{0.display_name} made role {1.name} mentionable"
+#: grenzpolizei.py:414
+msgid "Role {0.name} changed position from {0.position} to {1.position}"
 msgstr ""
 
-#: grenzpolizei.py:448
-msgid "{0.display_name} made role  {1.name} unmentionable"
+#: grenzpolizei.py:423
+msgid "Server owner changed from {0.owner.name} (id {0.owner.id})to {1.owner.name} (id {1.owner.id})"
 msgstr ""
 
-#: grenzpolizei.py:454 grenzpolizei.py:456
-msgid "{0.display_name} made role {1.name} to be shown seperately"
+#: grenzpolizei.py:429
+msgid "Server region changed from {0.region} to {1.region}"
 msgstr ""
 
-#: grenzpolizei.py:461
-msgid "Role permissions {0.name} changed from {0.permissions.value} to {1.permissions.value} by {2.display_name}"
+#: grenzpolizei.py:434
+msgid "Server name changed from {0.name} to {1.name}"
 msgstr ""
 
-#: grenzpolizei.py:466
-msgid "Role position {0} changed from {0.position} to {1.position} by {2.display_name}"
+#: grenzpolizei.py:439
+msgid "Server icon changed from {0.icon_url} to {1.icon_url}"
 msgstr ""
 
-#: grenzpolizei.py:478
-msgid "Server owner changed from {0.owner.name} (id {0.owner.id})to {1.owner.name} (id {1.owner.id}) by {2.display_name}"
+#: grenzpolizei.py:449
+msgid "{0.name} is idle and has been sent to #{1.channel}"
+msgstr ""
+
+#: grenzpolizei.py:454
+msgid "{0.name} is active again in #{1.channel}"
+msgstr ""
+
+#: grenzpolizei.py:459
+msgid "{0.name} muted themselves in #{1.channel}"
+msgstr ""
+
+#: grenzpolizei.py:464
+msgid "{0.name} unmuted themselves in #{1.channel}"
+msgstr ""
+
+#: grenzpolizei.py:469
+msgid "{0.name} deafened themselves in #{1.channel}"
+msgstr ""
+
+#: grenzpolizei.py:474
+msgid "{0.name} undeafened themselves in #{1.channel}"
+msgstr ""
+
+#: grenzpolizei.py:479
+msgid "{0.name} joined voice channel #{1.channel}"
 msgstr ""
 
 #: grenzpolizei.py:484
-msgid "Server region changed from {0.region} to {1.region} by {2.display_name}"
-msgstr ""
-
-#: grenzpolizei.py:489
-msgid "Server name changed from {0.name} to {1.name} by {2.display_name}"
-msgstr ""
-
-#: grenzpolizei.py:494
-msgid "Server icon changed from {0.icon_url} to {1.icon_url} by {2.display_name}"
-msgstr ""
-
-#: grenzpolizei.py:504
-msgid "{0.display_name} is idle and has been sent to #{1.channel}"
-msgstr ""
-
-#: grenzpolizei.py:509
-msgid "{0.display_name} is active again in #{1.channel}"
-msgstr ""
-
-#: grenzpolizei.py:514
-msgid "{0.display_name} muted themselves in #{1.channel}"
-msgstr ""
-
-#: grenzpolizei.py:519
-msgid "{0.display_name} unmuted themselves in #{1.channel}"
-msgstr ""
-
-#: grenzpolizei.py:524
-msgid "{0.display_name} deafened themselves in #{1.channel}"
-msgstr ""
-
-#: grenzpolizei.py:529
-msgid "{0.display_name} undeafened themselves in #{1.channel}"
-msgstr ""
-
-#: grenzpolizei.py:534
-msgid "{0.display_name} joined voice channel #{1.channel}"
-msgstr ""
-
-#: grenzpolizei.py:539
-msgid "{0.display_name} left voice channel #{1.channel}"
+msgid "{0.name} left voice channel #{1.channel}"
 msgstr ""
 
