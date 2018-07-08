@@ -2,7 +2,7 @@ import aiohttp
 import inspect
 import discord
 import os
-from .gp_setup import GrenzpolizeiSetup
+from .setup import GrenzpolizeiSetup
 import redbot.core.data_manager as datam
 from redbot.core.i18n import Translator
 from redbot.core import Config
