@@ -93,6 +93,7 @@ class GrenzpolizeiEvents:
                                                       description=_('**{0.name}** ({0.id}) '
                                                                     'lost role **{1.name}**').format(before, role))
                                 embed.set_author(name=_('Role removed'))
+                                await self.core._send_message_to_channel(guild, embed=embed)
                     elif len(before.roles) < len(after.roles):
                         for role in after.roles:
                             if role not in before.roles:
@@ -100,7 +101,7 @@ class GrenzpolizeiEvents:
                                                       description=_('**{0.name}** ({0.id}) got '
                                                                     'role **{1.name}**').format(before, role))
                                 embed.set_author(name=_('Role applied'))
-                    await self.core._send_message_to_channel(guild, embed=embed)
+                                await self.core._send_message_to_channel(guild, embed=embed)
 
     async def on_message_delete(self, message):
         guild = message.guild
