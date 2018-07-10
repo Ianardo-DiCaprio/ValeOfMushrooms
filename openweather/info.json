@@ -1,0 +1,9 @@
+{
+  "author" : "Paddo",
+  "bot_version" : [3, 0, 0],
+  "description" : "Get the weather from OpenWeather.",
+  "short" : "Get the weather from OpenWeather.",
+  "tags" : ["weather", "openweather", "paddo"],
+  "install_msg" : false,
+  "hidden" : false
+}
