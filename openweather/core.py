@@ -321,7 +321,6 @@ class OpenWeatherCore:
     async def get_weather(self, guild, location):
         if await self.config.api_key():
             request = await self.api_request(location)
-            print(request['cod'])
             if str(request['cod']) == '404':
                 return discord.Embed(color=discord.Color.red(),
                                      description='{} doesn\'t seem to be on this planet.'.format(location.capitalize()))
