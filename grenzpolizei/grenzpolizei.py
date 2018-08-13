@@ -1,5 +1,5 @@
 import discord
-from discord.core import commands
+from discord.ext import commands
 from redbot.core.i18n import Translator
 
 
