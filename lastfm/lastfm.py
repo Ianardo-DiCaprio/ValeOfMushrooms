@@ -102,7 +102,7 @@ class LastFM:
     #
     # }
 
-    @commands.command(pass_context=True, name='nowplaying', aliases=['np'])
+    @commands.command(pass_context=True, name='nowplaying')
     async def _nowplaying(self, context):
         """Shows the current played song"""
         if str(context.author.id) in self.settings['users']:
