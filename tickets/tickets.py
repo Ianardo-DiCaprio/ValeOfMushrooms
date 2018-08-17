@@ -1,5 +1,4 @@
-from discord.ext import commands
-
+from redbot.core import commands
 from .core import TicketsCore
 
 

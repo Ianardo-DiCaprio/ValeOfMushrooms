@@ -4,7 +4,7 @@ import urllib
 import discord
 import aiohttp
 import os
-from discord.ext import commands
+from redbot.core import commands
 from redbot.core.i18n import Translator
 
 _ = Translator('Last_FM', __file__)
