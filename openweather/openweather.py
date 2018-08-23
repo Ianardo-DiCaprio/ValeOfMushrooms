@@ -17,8 +17,7 @@ class OpenWeather:
     @commands.group(pass_context=True, name='weatherset', aliases=['weset'])
     @commands.has_permissions(administrator=True)
     async def weatherset(self, context):
-        if context.invoked_subcommand is None:
-            await context.send_help()
+        '''Set the API key'''
 
     @weatherset.command(pass_context=True, name='apikey')
     @commands.is_owner()

@@ -29,8 +29,6 @@ class Grenzpolizei(GrenzpolizeiEvents):
         '''
         The Grenzpolizei Cog
         '''
-        if context.invoked_subcommand is None:
-            await context.send_help()
 
     @_grenzpolizei.group(name='set')
     @commands.has_permissions(administrator=True)
@@ -38,8 +36,6 @@ class Grenzpolizei(GrenzpolizeiEvents):
         '''
         Settings
         '''
-        if context.invoked_subcommand is None or context.invoked_subcommand == self._grenzpolizei_set:
-            await context.send_help()
 
     @_grenzpolizei_set.command(name='show')
     async def _grenzpolizei_set_show(self, context):
@@ -61,8 +57,6 @@ class Grenzpolizei(GrenzpolizeiEvents):
         '''
         Manually control and change event settings
         '''
-        if context.invoked_subcommand is None or context.invoked_subcommand == self._grenzpolizei_set_event:
-            await context.send_help()
 
     @_grenzpolizei_set_event.command(name='enable')
     async def _grenzpolizei_set_event_enable(self, context, event_type: str, channel: discord.TextChannel):

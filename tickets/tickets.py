@@ -9,8 +9,9 @@ class Tickets:
 
     @commands.group(name='ticket')
     async def ticket(self, context):
-        if context.invoked_subcommand is None:
-            await context.send_help()
+        '''
+        Tickets!
+        '''
 
     @ticket.command(name='new')
     async def ticket_new(self, context):
@@ -42,8 +43,6 @@ class Tickets:
         '''
         Settings
         '''
-        if context.invoked_subcommand is None or context.invoked_subcommand == self.ticket_set:
-            await context.send_help()
 
     @ticket_set.command(name='purge')
     async def ticket_set_purge(self, context):
