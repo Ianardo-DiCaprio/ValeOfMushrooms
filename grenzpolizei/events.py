@@ -210,26 +210,26 @@ class GrenzpolizeiEvents:
                     if before.topic != after.topic:
                         embed = discord.Embed(color=self.blue)
                         embed.set_author(name=_('Topic of #{1.name} changed from \'{0.topic}\' '
-                                                'to \'{1.topic}\'').format(before, after))
+                                                ' to \'{1.topic}\'').format(before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
                 if before.position != after.position:
                     if isinstance(channel, discord.CategoryChannel):
                         embed = discord.Embed(color=self.blue)
                         embed.set_author(name=_('Category {0.name} moved from {0.position} '
-                                                'to {1.position}').format(before, after))
+                                                ' to {1.position}').format(before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
                     elif isinstance(channel, discord.VoiceChannel):
                         embed = discord.Embed(color=self.blue)
                         embed.set_author(name=_('Voice channel #{0.name} moved from {0.position} '
-                                                'to {1.position}').format(before, after))
+                                                ' to {1.position}').format(before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
                     if isinstance(channel, discord.TextChannel):
                         embed = discord.Embed(color=self.blue)
                         embed.set_author(name=_('Channel #{0.name} moved from {0.position} '
-                                                'to {1.position}').format(before, after))
+                                                ' to {1.position}').format(before, after))
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
 
@@ -288,14 +288,14 @@ class GrenzpolizeiEvents:
                 await self.core._send_message_to_channel(guild, embed=embed)
             if before.permissions != after.permissions:
                 embed = discord.Embed(color=self.blue)
-                embed.set_author(name=_('Role {0.name} changed permissions from {0.permissions.value}'
-                                        'to {1.permissions.value}').format(before, after))
+                embed.set_author(name=_('Role {0.name} changed permissions from {0.permissions.value} '
+                                        ' to {1.permissions.value}').format(before, after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
             if before.position != after.position:
                 embed = discord.Embed(color=self.blue)
-                embed.set_author(name=_('Role {0.name} changed position from {0.position}'
-                                        'to {1.position}').format(before, after))
+                embed.set_author(name=_('Role {0.name} changed position from {0.position} '
+                                        ' to {1.position}').format(before, after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
 
