@@ -12,8 +12,9 @@ class CustomRoles(CustomRolesEventsMixIn):
 
     @commands.group(name='customroles', aliases=['cr'])
     async def customroles(self, context):
-        if context.invoked_subcommand is None:
-            await context.send_help()
+        '''
+        CustomRoles
+        '''
 
     @customroles.group(name='list')
     async def customroles_list(self, context):
