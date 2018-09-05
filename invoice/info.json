@@ -3,7 +3,5 @@
   "bot_version" : [3, 0, 0],
   "description" : "Add a role when a member enters voice channels",
   "short" : "Add a role when a member enters voice channels",
-  "tags" : ["paddo", "voice", "in voice"],
-  "install_msg" : false,
-  "hidden" : false
+  "tags" : ["paddo", "voice", "in voice"]
 }
