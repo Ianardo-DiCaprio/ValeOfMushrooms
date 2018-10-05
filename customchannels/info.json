@@ -1,0 +1,7 @@
+{
+  "author" : "Paddo",
+  "bot_version" : [3, 0, 0],
+  "description" : "Members can make custom channels, both private and public",
+  "short" : "Members can make custom channels",
+  "tags" : ["channels", "custom", "customchannels", "paddo"]
+}
