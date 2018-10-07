@@ -3,8 +3,9 @@ from redbot.core import commands
 
 from .core import CustomChannelsCore
 
+BaseCog = getattr(commands, "Cog", object)
 
-class CustomChannels():
+class CustomChannels(BaseCog):
     def __init__(self, bot):
         self.bot = bot
         self.core = CustomChannelsCore(self.bot)

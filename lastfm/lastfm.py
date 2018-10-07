@@ -9,11 +9,13 @@ from redbot.core.i18n import Translator
 
 _ = Translator('Last_FM', __file__)
 
+BaseCog = getattr(commands, "Cog", object)
+
 # TODO
 # Top artist, album, tracks of past 7 days
 
 
-class LastFM:
+class LastFM(BaseCog):
     def __init__(self, bot):
         self.bot = bot
 

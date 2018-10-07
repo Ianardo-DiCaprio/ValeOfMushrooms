@@ -1,8 +1,9 @@
 from redbot.core import commands
 from .core import OpenWeatherCore
 
+BaseCog = getattr(commands, "Cog", object)
 
-class OpenWeather:
+class OpenWeather(BaseCog):
     def __init__(self, bot):
         self.core = OpenWeatherCore()
 

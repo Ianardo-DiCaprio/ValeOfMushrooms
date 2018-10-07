@@ -1,8 +1,9 @@
 from redbot.core import commands
 from redbot.core import Config
 
+BaseCog = getattr(commands, "Cog", object)
 
-class InVoice:
+class InVoice(BaseCog):
     def __init__(self, bot):
         self.bot = bot
 
