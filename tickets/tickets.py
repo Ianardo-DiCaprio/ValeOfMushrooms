@@ -1,8 +1,9 @@
 from redbot.core import commands
 from .core import TicketsCore
 
+BaseCog = getattr(commands, "Cog", object)
 
-class Tickets:
+class Tickets(BaseCog):
     def __init__(self, bot):
         self.bot = bot
         self.core = TicketsCore(bot)
