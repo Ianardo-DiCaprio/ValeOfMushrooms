@@ -6,6 +6,8 @@ from redbot.core.i18n import Translator
 from .core import GrenzpolizeiCore
 from .events import GrenzpolizeiEvents
 
+BaseCog = getattr(commands, "Cog", object)
+
 _ = Translator('Grenzpolizei', __file__)
 
 # TODO:
@@ -13,7 +15,7 @@ _ = Translator('Grenzpolizei', __file__)
 # A way to show all settings (needs a complete rework, removed for now)
 
 
-class Grenzpolizei(GrenzpolizeiEvents):
+class Grenzpolizei(GrenzpolizeiEvents, BaseCog):
     def __init__(self, bot):
         self.bot = bot
         self.core = GrenzpolizeiCore(bot)
