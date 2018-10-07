@@ -4,8 +4,9 @@ import discord
 from .core import CustomRolesCore
 from .events import CustomRolesEventsMixIn
 
+BaseCog = getattr(commands, "Cog", object)
 
-class CustomRoles(CustomRolesEventsMixIn):
+class CustomRoles(CustomRolesEventsMixIn, BaseCog):
     def __init__(self, bot):
         self.bot = bot
         self.core = CustomRolesCore(self.bot)
