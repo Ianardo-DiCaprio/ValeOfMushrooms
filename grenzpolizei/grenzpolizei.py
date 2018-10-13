@@ -10,12 +10,18 @@ BaseCog = getattr(commands, "Cog", object)
 
 _ = Translator('Grenzpolizei', __file__)
 
-# TODO:
-# Documentation
-# A way to show all settings (needs a complete rework, removed for now)
+#
+# This is where all commands come from, no actual logic is being worked here.
+# A function from core is being called to process the data from the commands
+#
+# So unless you have to add a new command, there's nothing to be done here.
+#
 
 
 class Grenzpolizei(GrenzpolizeiEvents, BaseCog):
+    #
+    # GrenzpolizeiEvents is a mixin of events.py
+    #
     def __init__(self, bot):
         self.bot = bot
         self.core = GrenzpolizeiCore(bot)

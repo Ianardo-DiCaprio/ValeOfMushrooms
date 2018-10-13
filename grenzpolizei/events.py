@@ -5,6 +5,23 @@ from redbot.core.i18n import Translator
 
 _ = Translator('Grenzpolizei', __file__)
 
+#
+# *thump* *thump* *thump*
+#
+# Can you hear that? Me too! This is the heart of Grenzpolizei. All events
+# are being triggered from here. Discord.py does this automatically, you only
+# need to add the event and violá!
+#
+
+# This whole class is being treated as a mixin in grenzpolizei.py
+#
+# Again, only basic logic is being done here, the brute of the work is done
+# by the core. It makes an embed from the context and sends it on to
+# _send_message_to_channel() in the core.
+#
+# It's also possible for an event to ignore a channel or member, by adding
+# core._ignore(). Currently this is only done where applicable.
+
 
 class GrenzpolizeiEvents:
     def __init__(self, bot):
