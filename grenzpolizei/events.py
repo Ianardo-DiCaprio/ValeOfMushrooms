@@ -290,7 +290,7 @@ class GrenzpolizeiEvents:
             if before.mentionable != after.mentionable:
                 embed = discord.Embed(color=self.blue)
                 if after.mentionable:
-                    embed.set_author(name=_('{Role {0.name} has been made mentionable').format(after))
+                    embed.set_author(name=_('Role {0.name} has been made mentionable').format(after))
                 else:
                     embed.set_author(name=_('Role {0.name} has been made unmentionable').format(after))
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
