@@ -70,7 +70,7 @@ class TicketsCore:
 
         sessions = await self.config.guild(guild).sessions()
 
-        if channel.id in sessions and await self.config.guild(guild).ticket_role() in [role.id for role in author.roles]:
+        if str(channel.id) in sessions and await self.config.guild(guild).ticket_role() in [role.id for role in author.roles]:
 
             ticket_id = str(channel.name).split('-')[1]
             await channel.edit(topic=channel.topic+self.ticket_info_format.format(
@@ -92,9 +92,9 @@ class TicketsCore:
 
         sessions = await self.config.guild(guild).sessions()
 
-        if channel.id in sessions and await self.config.guild(guild).ticket_role() in [role.id for role in author.roles]:
+        if str(channel.id) in sessions and await self.config.guild(guild).ticket_role() in [role.id for role in author.roles]:
 
-            member = guild.get_member(sessions[channel.id])
+            member = guild.get_member(sessions[str(channel.id)])
             ticket_id = str(channel.name).split('-')[1]
 
             closed_category = await self.config.guild(guild).closed_category()
