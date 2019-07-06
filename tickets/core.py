@@ -47,10 +47,11 @@ class TicketsCore:
                                       information='Ticket opened'))
 
             if default_message_ticket_channel:
-                await ticket_channel.send(default_message_ticket_channel.format(member=author,
+                embed=discord.Embed(title="efef", description=default_message_ticket_channel.format(member=author,
                                                                                 channel=ticket_channel,
                                                                                 origin=context.channel,
                                                                                 ticket_role=ticket_role))
+                await ticket_channel.send(embed=embed)
 
             async with self.config.guild(guild).sessions() as session:
                     session.update({ticket_channel.id: author.id})
