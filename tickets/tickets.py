@@ -22,7 +22,8 @@ class Tickets(BaseCog):
         if context.invoked_subcommand is None:
             message = await self.core.create_ticket(context)
             if message:
-                await context.send(message)
+                embed=discord.Embed(title="New ticket", description=message)
+                await context.send(embed=embed)
 
     @ticket.command(name='update')
     async def ticket_update(self, context, *, status: str):
