@@ -2,6 +2,7 @@ import discord
 from datetime import datetime
 from .core import GrenzpolizeiCore
 from redbot.core.i18n import Translator
+from redbot.core import commands
 
 _ = Translator('Grenzpolizei', __file__)
 
@@ -28,6 +29,7 @@ class GrenzpolizeiEvents:
         self.bot = bot
         self.core = GrenzpolizeiCore(bot)
 
+    @commands.Cog.listener()
     async def on_member_join(self, author):
         guild = author.guild
         if await self.core._validate_event(guild) and author.id != self.bot.user.id:
@@ -38,6 +40,7 @@ class GrenzpolizeiEvents:
             embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
             await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_member_ban(self, guild, author):
         if await self.core._validate_event(guild) and author.id != self.bot.user.id:
 
@@ -59,6 +62,7 @@ class GrenzpolizeiEvents:
 
             await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_member_unban(self, guild, author):
         if await self.core._validate_event(guild) and author.id != self.bot.user.id:
 
@@ -70,6 +74,7 @@ class GrenzpolizeiEvents:
 
             await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_member_remove(self, author):
         guild = author.guild
         if await self.core._validate_event(guild) and author.id != self.bot.user.id:
@@ -81,6 +86,7 @@ class GrenzpolizeiEvents:
 
             await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_member_update(self, before, after):
         guild = after.guild
         author = after
@@ -120,6 +126,7 @@ class GrenzpolizeiEvents:
                                 embed.set_author(name=_('Role applied'))
                                 await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_message_delete(self, message):
         guild = message.guild
         author = message.author
@@ -153,6 +160,7 @@ class GrenzpolizeiEvents:
                                                                      content=message,
                                                                      attachment=self.core.attachment_path+'/'+filename)
 
+    @commands.Cog.listener()
     async def on_message_edit(self, before, after):
         guild = after.guild
         author = after.author
@@ -173,6 +181,7 @@ class GrenzpolizeiEvents:
 
                     await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
         if isinstance(channel, discord.abc.GuildChannel):
             guild = channel.guild
@@ -190,6 +199,7 @@ class GrenzpolizeiEvents:
 
                 await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel):
         if isinstance(channel, discord.abc.GuildChannel):
             guild = channel.guild
@@ -206,6 +216,7 @@ class GrenzpolizeiEvents:
 
                 await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
         channel = after
 
@@ -250,6 +261,7 @@ class GrenzpolizeiEvents:
                         embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                         await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_guild_role_create(self, role):
         guild = role.guild
 
@@ -261,6 +273,7 @@ class GrenzpolizeiEvents:
 
             await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_guild_role_delete(self, role):
         guild = role.guild
 
@@ -272,6 +285,7 @@ class GrenzpolizeiEvents:
 
             await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_guild_role_update(self, before, after):
         guild = after.guild
 
@@ -316,6 +330,7 @@ class GrenzpolizeiEvents:
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_guild_update(self, before, after):
         guild = after
         if await self.core._validate_event(guild):
@@ -341,6 +356,7 @@ class GrenzpolizeiEvents:
                 embed.set_footer(text='{}'.format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
                 await self.core._send_message_to_channel(guild, embed=embed)
 
+    @commands.Cog.listener()
     async def on_voice_state_update(self, author, before, after):
         guild = author.guild
         if await self.core._ignore(guild, author=author):
