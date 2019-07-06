@@ -30,11 +30,30 @@ class GrenzpolizeiCore:
                             'on_guild_role_update', 'on_member_ban', 'on_member_unban', 'on_member_kick',
                             'on_member_remove', 'on_member_join']
 
-        self.config = Config.get_conf(self, identifier=6198483584)
+        self.config = Config.get_conf(self, identifier=6198483584, force_registration=True)
         default_guild = {
             'enabled': False,
             'compact': False,
-            'events': {},
+            'events': {
+                "on_ban": {"enabled": False, "channel": False},
+                "on_guild_channel_create": {"enabled": False, "channel": False},
+                "on_guild_channel_delete": {"enabled": False, "channel": False},
+                "on_guild_channel_update": {"enabled": False, "channel": False},
+                "on_guild_role_create": {"enabled": False, "channel": False},
+                "on_guild_role_delete": {"enabled": False, "channel": False},
+                "on_guild_role_update": {"enabled": False, "channel": False},
+                "on_guild_update": {"enabled": False, "channel": False},
+                "on_kick": {"enabled": False, "channel": False},
+                "on_member_ban": {"enabled": False, "channel": False},
+                "on_member_join": {"enabled": False, "channel": False}, 
+                "on_member_remove": {"enabled": False, "channel": False},
+                "on_member_unban": {"enabled": False, "channel": False},
+                "on_member_update": {"enabled": False, "channel": False},
+                "on_message_delete": {"enabled": False, "channel": False},
+                "on_message_edit": {"enabled": False, "channel": False},
+                "on_raw_bulk_message_delete": {"enabled": False, "channel": False},
+                "on_voice_state_update": {"enabled": False, "channel": False},
+            },
             'ignore': {
                 'channels': {},
                 'members': {}
@@ -51,12 +70,12 @@ class GrenzpolizeiCore:
     # Enable an event
     async def enable_event(self, guild, channel, event_type):
         async with self.config.guild(guild).events() as events:
-                events[event_type].update({'enable': True, 'channel': channel.id})
+                events[event_type].update({'enabled': True, 'channel': channel.id})
 
     # Disable an event
     async def disable_event(self, guild, event_type):
         async with self.config.guild(guild).events() as events:
-                events[event_type].update({'enable': False, 'channel': False})
+                events[event_type].update({'enabled': False, 'channel': False})
 
     # Toggle the compact mode
     async def compactmode(self, guild):
