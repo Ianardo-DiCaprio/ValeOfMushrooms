@@ -126,7 +126,8 @@ class Grenzpolizei(GrenzpolizeiEvents, BaseCog):
             on_voice_state_update_channel = await self.core.config.guild(guild).events.get_raw("on_voice_state_update", "channel")
             on_voice_state_update_chan = self.bot.get_channel(int(on_voice_state_update_channel))
             message += '**Voice updates:** {}\n     **Channel:** {}'.format(on_voice_state_update, on_voice_state_update_chan.mention if on_voice_state_update_chan else on_voice_state_update_chan)
-            await context.send(message)
+            embed=discord.Embed(title="Grenzpolizei settings", description=message, color=self.red)
+            await context.send(embed=embed)
         except:
             await context.send("Something went wrong while trying to show the set settings.")
 
